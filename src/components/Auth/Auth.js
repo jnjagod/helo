@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import { connect } from 'react-redux'
+import { updateUser } from '../../ducks/reducer'
 import Swal from 'sweetalert2'
 
 class Auth extends Component {
@@ -13,11 +15,12 @@ class Auth extends Component {
     if (username && password) {
       axios
         .post('/auth/register', { username, password })
-      .then(res => {
-        Swal.fire('Registered!')
-        this.props.history.push('/dashboard')
-      })
-      .catch(err => Swal.fire(err.response.data.message))
+        .then(res => {
+          this.props.updateUser(res.data)
+          Swal.fire(`Welcome, ${username}`)
+          this.props.history.push('/dashboard')
+        })
+        .catch(err => Swal.fire(err.response.data.message))
     } else {
       Swal.fire('Please enter a username and password.')
     }
@@ -28,7 +31,9 @@ class Auth extends Component {
     axios
       .post('/auth/login', { username, password })
       .then(res => {
-        Swal.fire(res.data.message)
+        console.log(res.data)
+        this.props.updateUser(res.data)
+        Swal.fire(`Welcome, ${username}!`)
         this.props.history.push('/dashboard')
       })
       .catch(err => Swal.fire(err.response.data.message))
@@ -53,4 +58,8 @@ class Auth extends Component {
   }
 }
 
-export default Auth
+const mapDispatchToProps = {
+  updateUser
+}
+
+export default connect(null, mapDispatchToProps)(Auth)

@@ -1,5 +1,6 @@
 import React from 'react'
 import { withRouter, Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 const Nav = (props) => {
   if (props.location.pathname === '/') {
@@ -7,6 +8,10 @@ const Nav = (props) => {
   } else {
     return (
       <div>
+        <div>
+          <img src={props.profile_pic} alt=""/>
+          <p>{props.username}</p>
+        </div>
         <Link to='/dashboard'>
           <button>Home</button>
         </Link>
@@ -21,4 +26,8 @@ const Nav = (props) => {
   }
 }
 
-export default withRouter(Nav)
+function mapStateToProps(reduxState) {
+  return reduxState
+}
+
+export default withRouter(connect(mapStateToProps)(Nav))
